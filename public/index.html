@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Yandex News Reader</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        padding: 0;
+      }
+      .news-item {
+        margin-bottom: 20px;
+      }
+      .news-item h3 {
+        margin: 0;
+        font-size: 1.5em;
+      }
+      .news-item p {
+        margin: 5px 0;
+      }
+      .loading {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Yandex News Reader</h1>
+    <div id="news-container" class="loading">Loading news...</div>
+
+    <script>
+      async function fetchNews() {
+        try {
+          const response = await fetch("/news");
+          const data = await response.json();
+          displayNews(data.items);
+        } catch (error) {
+          document.getElementById("news-container").innerHTML =
+            "Failed to load news";
+        }
+      }
+
+      function displayNews(items) {
+        const container = document.getElementById("news-container");
+        container.classList.remove("loading");
+        container.innerHTML = "";
+
+        items.forEach((item) => {
+          const newsItem = document.createElement("div");
+          newsItem.classList.add("news-item");
+
+          const title = document.createElement("h3");
+          title.innerHTML = `<a href="${item.link}" target="_blank">${item.title}</a>`;
+          newsItem.appendChild(title);
+
+          const pubDate = document.createElement("p");
+          pubDate.textContent = new Date(item.pubDate).toLocaleString();
+          newsItem.appendChild(pubDate);
+
+          const content = document.createElement("p");
+          content.textContent = item.contentSnippet;
+          newsItem.appendChild(content);
+
+          container.appendChild(newsItem);
+        });
+      }
+
+      fetchNews();
+    </script>
+  </body>
+</html>

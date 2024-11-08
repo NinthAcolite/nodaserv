@@ -1,12 +1,15 @@
 const express = require("express");
 const Parser = require("rss-parser");
 const parser = new Parser();
+const path = require("path");
 
 const app = express();
 const PORT = 3000;
 
+app.use(express.static(path.join(__dirname, "public")));
+
 app.get("/", (req, res) => {
-  res.send("Welcome to the Yandex News Reader Service!");
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 app.get("/news", async (req, res) => {
@@ -20,5 +23,7 @@ app.get("/news", async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}/news`);
+  console.log(`Server is running on:
+    - http://localhost:${PORT}/
+    - http://localhost:${PORT}/news`);
 });
